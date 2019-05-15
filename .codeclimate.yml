@@ -1,0 +1,10 @@
+version: "2"
+plugins:
+  pep8:
+    enabled: true
+  bandit:
+    enabled: true
+checks:
+  method-complexity:
+    config:
+      threshold: 7
