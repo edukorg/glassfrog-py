@@ -7,11 +7,12 @@ from glassfrog.client import GlassFrogClient
 class BaseModel:
     _RESOURCE_NAME = None
 
-    def __init__(self, data):
+    def __init__(self, data, linked_data=None):
         if not isinstance(data, dict):
             raise exceptions.UnexpectedDataFormat()
 
         self._data = data
+        self._linked_data = linked_data
 
     @property
     def id(self):
@@ -26,23 +27,42 @@ class BaseModel:
     def _build_item_from_link(self, link_name, model_klass):
         links = self._get('links')
         item_id = links[link_name]
-        return model_klass.get(id=item_id)
+        if item_id:
+            try:
+                return model_klass.get(id=item_id)
+            except exceptions.UnsupportedModelException:
+                return model_klass.build(id=item_id, linked_data=self._linked_data)
+        else:
+            return None
 
     def _build_items_from_link(self, link_name, model_klass):
         links = self._get('links')
         for item_id in links[link_name]:
-            yield model_klass.get(id=item_id)
+            try:
+                yield model_klass.get(id=item_id)
+            except exceptions.UnsupportedModelException:
+                yield model_klass.build(id=item_id, linked_data=self._linked_data)
+
+    @classmethod
+    def build(cls, id, linked_data):
+        if linked_data:
+            for data in linked_data[cls._RESOURCE_NAME]:
+                if data['id'] == id:
+                    return cls(data=data, linked_data=None)
+        return cls(data={'id': id})
 
     @classmethod
     def get(cls, id):
         data = GlassFrogClient.get(resource=cls._RESOURCE_NAME, id=id)
-        return cls(data=data[cls._RESOURCE_NAME][0])
+        linked_data = data.get('linked', None)
+        return cls(data=data[cls._RESOURCE_NAME][0], linked_data=linked_data)
 
     @classmethod
     def list(cls):
         data = GlassFrogClient.get(resource=cls._RESOURCE_NAME)
+        linked_data = data.get('linked', None)
         for item in data[cls._RESOURCE_NAME]:
-            yield cls(data=item)
+            yield cls(data=item, linked_data=linked_data)
 
     def _detail(self, resource_class):
         data = GlassFrogClient.get(
@@ -50,8 +70,9 @@ class BaseModel:
             id=self.id,
             from_resource=self._RESOURCE_NAME,
         )
+        linked_data = data.get('linked', None)
         for item in data[resource_class._RESOURCE_NAME]:
-            yield resource_class(data=item)
+            yield resource_class(data=item, linked_data=linked_data)
 
 
 class UnsupportedModelMixin:
@@ -85,7 +106,7 @@ class Circle(BaseModel):
     @property
     def organization(self):
         organization_id = self._get('organization_id')
-        return Organization.get(id=organization_id)
+        return Organization.build(id=organization_id, linked_data=self._linked_data)
 
     @property
     def roles(self):
@@ -164,7 +185,7 @@ class Role(BaseModel):
     @property
     def organization(self):
         organization_id = self._get('organization_id')
-        return Organization.get(id=organization_id)
+        return Organization.build(id=organization_id, linked_data=self._linked_data)
 
     @property
     def is_core(self):
