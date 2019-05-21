@@ -83,7 +83,11 @@ class TestCircleModel(ModelTestMixin, unittest.TestCase):
 
     def test_fields_policies(self):
         data = self.sample_data()[0]
-        circle = models.Circle(data=data)
+        linked_data = {'policies': [
+            {'id': 100, 'title': 'potato 100', 'body': 'tomato 100'},
+            {'id': 200, 'title': 'potato 200', 'body': 'tomato 200'},
+        ]}
+        circle = models.Circle(data=data, linked_data=linked_data)
 
         policy_data = [{'id': 100}, {'id': 200}]
         with self.patch_get(resource='policies', data=policy_data, many=True) as get:
@@ -92,7 +96,12 @@ class TestCircleModel(ModelTestMixin, unittest.TestCase):
         self.assertEqual(2, len(policies))
         [policy_a, policy_b] = policies
         self.assertEqual(100, policy_a.id)
+        self.assertEqual('potato 100', policy_a.title)
+        self.assertEqual('tomato 100', policy_a.body)
+
         self.assertEqual(200, policy_b.id)
+        self.assertEqual('potato 200', policy_b.title)
+        self.assertEqual('tomato 200', policy_b.body)
 
         self.assertEqual(0, get.call_count)
 

@@ -97,7 +97,11 @@ class TestRoleModel(ModelTestMixin, unittest.TestCase):
 
     def test_fields_accontabilities(self):
         data = self.sample_data()[0]
-        role = models.Role(data=data)
+        linked_data = {'accountabilities': [
+            {'id': 10, 'description': 'potato 10'},
+            {'id': 20, 'description': 'potato 20'},
+        ]}
+        role = models.Role(data=data, linked_data=linked_data)
 
         account_data = [{'id': 10}, {'id': 20}]
         with self.patch_get(resource='accountabilities', data=account_data, many=True) as get:
@@ -106,13 +110,19 @@ class TestRoleModel(ModelTestMixin, unittest.TestCase):
         self.assertEqual(2, len(accountabilities))
         [accountabilities_a, accountabilities_b] = accountabilities
         self.assertEqual(10, accountabilities_a.id)
+        self.assertEqual('potato 10', accountabilities_a.description)
         self.assertEqual(20, accountabilities_b.id)
+        self.assertEqual('potato 20', accountabilities_b.description)
 
         self.assertEqual(0, get.call_count)
 
     def test_fields_domains(self):
         data = self.sample_data()[0]
-        role = models.Role(data=data)
+        linked_data = {'domains': [
+            {'id': 1000, 'description': 'potato 1000'},
+            {'id': 2000, 'description': 'potato 2000'},
+        ]}
+        role = models.Role(data=data, linked_data=linked_data)
 
         domain_data = [{'id': 1000}, {'id': 2000}]
         with self.patch_get(resource='domains', data=domain_data, many=True) as get:
@@ -121,7 +131,9 @@ class TestRoleModel(ModelTestMixin, unittest.TestCase):
         self.assertEqual(2, len(domains))
         [domain_a, domain_b] = domains
         self.assertEqual(1000, domain_a.id)
+        self.assertEqual('potato 1000', domain_a.description)
         self.assertEqual(2000, domain_b.id)
+        self.assertEqual('potato 2000', domain_b.description)
 
         self.assertEqual(0, get.call_count)
 
