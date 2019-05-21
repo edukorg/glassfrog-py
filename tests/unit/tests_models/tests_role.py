@@ -78,7 +78,6 @@ class TestRoleModel(ModelTestMixin, unittest.TestCase):
         self.assertEqual("Circle of Life", role.name)
         self.assertEqual("Life", role.short_name)
         self.assertEqual("Answer the question", role.purpose)
-        self.assertEqual(None, role.strategy)
         self.assertEqual(True, role.is_core)
 
         self.assertTrue(isinstance(role.organization, models.Organization))
