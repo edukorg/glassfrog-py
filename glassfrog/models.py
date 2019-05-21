@@ -162,10 +162,6 @@ class Role(BaseModel):
         return self._get('short_name')
 
     @property
-    def strategy(self):
-        return self._get('strategy')
-
-    @property
     def organization(self):
         organization_id = self._get('organization_id')
         return Organization.get(id=organization_id)
