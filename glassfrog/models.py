@@ -284,13 +284,29 @@ class Organization(UnsupportedModelMixin, BaseModel):
 class Domain(UnsupportedModelMixin, BaseModel):
     _RESOURCE_NAME = 'domains'
 
+    @property
+    def description(self):
+        return self._get('description')
+
 
 class Policy(UnsupportedModelMixin, BaseModel):
     _RESOURCE_NAME = 'policies'
 
+    @property
+    def title(self):
+        return self._get('title')
+
+    @property
+    def body(self):
+        return self._get('body')
+
 
 class Accountability(UnsupportedModelMixin, BaseModel):
     _RESOURCE_NAME = 'accountabilities'
+
+    @property
+    def description(self):
+        return self._get('description')
 
 
 class Project(UnsupportedModelMixin, BaseModel):
