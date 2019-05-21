@@ -36,7 +36,7 @@ class TestProjectModel(ModelTestMixin, unittest.TestCase):
     def test_detail(self):
         data = [self.sample_data()[0]]
         with self.patch_get(resource='projects', data=data, many=True) as get:
-            project = models.Project.get(id=666)
+            with self.assertRaises(exceptions.UnsupportedModelException):
+                models.Project.get(id=666)
 
-        self.assertEqual(666, project.id)
         self.assertEqual(0, get.call_count)

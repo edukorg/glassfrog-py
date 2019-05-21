@@ -57,7 +57,7 @@ class BaseModel:
 class UnsupportedModelMixin:
     @classmethod
     def get(cls, id):
-        return cls(data={'id': id})
+        raise exceptions.UnsupportedModelException()
 
     @classmethod
     def list(cls):

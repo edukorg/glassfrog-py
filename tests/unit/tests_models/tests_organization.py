@@ -36,7 +36,7 @@ class TestOrganizationModel(ModelTestMixin, unittest.TestCase):
     def test_detail(self):
         data = [self.sample_data()[0]]
         with self.patch_get(resource='organizations', data=data, many=True) as get:
-            organization = models.Organization.get(id=666)
+            with self.assertRaises(exceptions.UnsupportedModelException):
+                models.Organization.get(id=666)
 
-        self.assertEqual(666, organization.id)
         self.assertEqual(0, get.call_count)
