@@ -36,7 +36,7 @@ class TestDomainModel(ModelTestMixin, unittest.TestCase):
     def test_detail(self):
         data = [self.sample_data()[0]]
         with self.patch_get(resource='domains', data=data, many=True) as get:
-            domain = models.Domain.get(id=666)
+            with self.assertRaises(exceptions.UnsupportedModelException):
+                models.Domain.get(id=666)
 
-        self.assertEqual(666, domain.id)
         self.assertEqual(0, get.call_count)

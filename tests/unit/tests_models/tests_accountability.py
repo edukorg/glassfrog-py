@@ -36,7 +36,7 @@ class TestAccountabilityModel(ModelTestMixin, unittest.TestCase):
     def test_detail(self):
         data = [self.sample_data()[0]]
         with self.patch_get(resource='accountabilities', data=data, many=True) as get:
-            accountability = models.Accountability.get(id=666)
+            with self.assertRaises(exceptions.UnsupportedModelException):
+                models.Accountability.get(id=666)
 
-        self.assertEqual(666, accountability.id)
         self.assertEqual(0, get.call_count)
