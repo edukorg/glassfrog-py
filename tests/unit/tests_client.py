@@ -19,7 +19,7 @@ class HTTPPrettyTestMixin:
 
 
 class TestGlassFrogClient(HTTPPrettyTestMixin, unittest.TestCase):
-    API_URL = 'https://api.glassfrog.com'
+    API_URL = 'https://api.glassfrog.com/api/v3'
 
     def patch_token(self, token='42'):
         return patch('glassfrog.client.GlassFrogClient._TOKEN', token)
