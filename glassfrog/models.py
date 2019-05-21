@@ -104,7 +104,7 @@ class Circle(BaseModel):
     @property
     def domains(self):
         yield from self._build_items_from_link(
-            link_name='domains',
+            link_name='domain',
             model_klass=Domain,
         )
 

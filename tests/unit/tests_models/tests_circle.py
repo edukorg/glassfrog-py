@@ -21,7 +21,7 @@ class TestCircleModel(ModelTestMixin, unittest.TestCase):
                     100,
                     200
                 ],
-                "domains": [
+                "domain": [
                     1000,
                     2000,
                 ],
