@@ -6,7 +6,7 @@ from glassfrog import exceptions
 
 
 class GlassFrogClient:
-    _URL = 'https://api.glassfrog.com'
+    _URL = 'https://api.glassfrog.com/api/v3'
     _TOKEN = os.environ.get('GLASSFROG_API_TOKEN')
 
     @classmethod
