@@ -63,6 +63,18 @@ class TestPersonModel(ModelTestMixin, unittest.TestCase):
 
         self.assertEqual(1, get.call_count)
 
+    def test_fields_role_not_found(self):
+        data = self.sample_data()[0]
+        linked_data = {'roles': [{'id': 100}]}
+        assignment = models.Assignment(data=data, linked_data=linked_data)
+
+        with self.patch_get_error() as get:
+            role = assignment.role
+
+        self.assertEqual(100, role.id)
+
+        self.assertEqual(1, get.call_count)
+
     def test_fields_election_core(self):
         data = self.sample_data()[0]
         role = models.Assignment(data=data)

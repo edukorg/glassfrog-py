@@ -32,7 +32,7 @@ class BaseModel:
         if item_id:
             try:
                 return model_klass.get(id=item_id)
-            except exceptions.UnsupportedModelException:
+            except (exceptions.UnsupportedModelException, exceptions.DoesNotExist):
                 return model_klass.build(id=item_id, linked_data=self._linked_data)
         else:
             return None
@@ -42,7 +42,7 @@ class BaseModel:
         for item_id in links[link_name]:
             try:
                 yield model_klass.get(id=item_id)
-            except exceptions.UnsupportedModelException:
+            except (exceptions.UnsupportedModelException, exceptions.DoesNotExist):
                 yield model_klass.build(id=item_id, linked_data=self._linked_data)
 
     @classmethod
