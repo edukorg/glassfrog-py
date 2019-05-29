@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from requests import HTTPError
+
 from glassfrog import exceptions
 from glassfrog.client import GlassFrogClient
 
@@ -53,7 +55,14 @@ class BaseModel:
 
     @classmethod
     def get(cls, id):
-        data = GlassFrogClient.get(resource=cls._RESOURCE_NAME, id=id)
+        try:
+            data = GlassFrogClient.get(resource=cls._RESOURCE_NAME, id=id)
+        except HTTPError as e:
+            if e.response.status_code == 404:
+                raise exceptions.DoesNotExist()
+            else:
+                raise
+
         linked_data = data.get('linked', None)
         return cls(data=data[cls._RESOURCE_NAME][0], linked_data=linked_data)
 

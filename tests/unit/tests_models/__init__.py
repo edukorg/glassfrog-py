@@ -1,4 +1,5 @@
 from mock import patch
+from requests import HTTPError, Response
 
 from tests.unit.tests_client import HTTPPrettyTestMixin
 
@@ -20,6 +21,13 @@ class ModelTestMixin(HTTPPrettyTestMixin):
             }
         return patch('glassfrog.client.GlassFrogClient.get', **kwargs)
 
+    def patch_get_error(self, content=None, status_code=404):
+        response = Response()
+        response.status_code = status_code
+        response._content = content
+        error = HTTPError(response=response)
+        return patch('glassfrog.client.GlassFrogClient.get', side_effect=error)
+
     def test_fields(self):
         raise NotImplementedError()
 
@@ -30,4 +38,7 @@ class ModelTestMixin(HTTPPrettyTestMixin):
         raise NotImplementedError()
 
     def test_detail(self):
+        raise NotImplementedError()
+
+    def test_not_found(self):
         raise NotImplementedError()
