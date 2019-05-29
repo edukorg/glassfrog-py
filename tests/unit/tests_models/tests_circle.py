@@ -176,3 +176,10 @@ class TestCircleModel(ModelTestMixin, unittest.TestCase):
             self.assertEqual(sample, circle._data)
 
         get.assert_called_once_with(resource='circles', id=42)
+
+    def test_not_found(self):
+        with self.patch_get_error(status_code=404) as get:
+            with self.assertRaises(exceptions.DoesNotExist):
+                models.Circle.get(id=666)
+
+        self.assertEqual(1, get.call_count)

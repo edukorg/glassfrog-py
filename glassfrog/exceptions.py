@@ -8,3 +8,7 @@ class TokenUndefinedException(Exception):
 
 class UnexpectedDataFormat(Exception):
     pass
+
+
+class DoesNotExist(Exception):
+    pass

@@ -106,3 +106,10 @@ class TestPersonModel(ModelTestMixin, unittest.TestCase):
             self.assertEqual(sample, assignment._data)
 
         get.assert_called_once_with(resource='assignments', id=42)
+
+    def test_not_found(self):
+        with self.patch_get_error(status_code=404) as get:
+            with self.assertRaises(exceptions.DoesNotExist):
+                models.Assignment.get(id=666)
+
+        self.assertEqual(1, get.call_count)

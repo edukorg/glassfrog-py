@@ -40,3 +40,10 @@ class TestPolicyModel(ModelTestMixin, unittest.TestCase):
                 models.Policy.get(id=666)
 
         self.assertEqual(0, get.call_count)
+
+    def test_not_found(self):
+        with self.patch_get_error(status_code=404) as get:
+            with self.assertRaises(exceptions.UnsupportedModelException):
+                models.Policy.get(id=666)
+
+        self.assertEqual(0, get.call_count)
