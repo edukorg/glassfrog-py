@@ -18,9 +18,6 @@ unit:
 	@pipenv run nosetests --with-coverage
 
 clean:
-	@printf "Cleaning up files that are already in .gitignore... "
-	@for pattern in `cat .gitignore`; do rm -rf $$pattern; done
-	@echo "OK!"
 	@printf "Deleting dist files"
 	@rm -rf dist
 
