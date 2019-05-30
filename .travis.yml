@@ -1,12 +1,16 @@
 language: python
-sudo: false
+dist: xenial
+sudo: true
 python:
   - "3.6"
+  - "3.7"
+
+env:
+  global:
+    - PIPENV_IGNORE_VIRTUALENVS=1
 
 install:
-  - pip install -U pip --no-cache-dir
-  - pip install pipenv
-  - pipenv install --dev
+  - make dependencies
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -14,10 +18,11 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - make test
+  - pipenv check
+  - pipenv run make test
 
 after_script:
-  - coverage xml
+  - pipenv run coverage xml
   - ./cc-test-reporter after-build -t coverage.py --exit-code $TRAVIS_TEST_RESULT
 
 # automated pypi releases
