@@ -15,14 +15,11 @@ lint:
 
 unit:
 	@echo "Running unit tests ..."
-	@pipenv run nosetests --with-coverage
+	@pipenv run nosetests
 
 clean:
-	@printf "Cleaning up files that are already in .gitignore... "
-	@for pattern in `cat .gitignore`; do rm -rf $$pattern; done
-	@echo "OK!"
 	@printf "Deleting dist files"
-	@rm -rf dist
+	@rm -rf dist .coverage
 
 release: lint unit
 	@rm -rf dist/*
