@@ -20,10 +20,14 @@ class BaseModel:
     def id(self):
         return self._get('id')
 
-    def _get(self, value):
+    def _get(self, value, optional=False):
         try:
             return self._data[value]
-        except (KeyError, TypeError):
+        except TypeError:
+            raise exceptions.UnexpectedDataFormat()
+        except KeyError:
+            if optional:
+                return None
             raise exceptions.UnexpectedDataFormat()
 
     def _build_item_from_link(self, link_name, model_klass):
