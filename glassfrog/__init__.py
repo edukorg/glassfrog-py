@@ -14,7 +14,7 @@ from glassfrog.exceptions import (
 
 
 name = "glassfrog"
-version = '0.2.0'
+version = '0.3.0'
 
 __all__ = (
     'Accountability',
