@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from requests import HTTPError
 
@@ -324,3 +324,71 @@ class Accountability(UnsupportedModelMixin, BaseModel):
 
 class Project(UnsupportedModelMixin, BaseModel):
     _RESOURCE_NAME = 'projects'
+
+    @property
+    def person(self):
+        return self._build_item_from_link(
+            link_name='person',
+            model_klass=Person,
+        )
+
+    @property
+    def role(self):
+        return self._build_item_from_link(
+            link_name='role',
+            model_klass=Role,
+        )
+
+    @property
+    def circle(self):
+        return self._build_item_from_link(
+            link_name='circle',
+            model_klass=Circle,
+        )
+
+    @property
+    def created_at(self):
+        date_str = self._get('created_at')
+        dt = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%SZ')
+        return dt.replace(tzinfo=timezone.utc)
+
+    @property
+    def archived_at(self):
+        date_str = self._get('archived_at')
+        if date_str:
+            dt = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%SZ')
+            return dt.replace(tzinfo=timezone.utc)
+        else:
+            return None
+
+    @property
+    def description(self):
+        return self._get('description')
+
+    @property
+    def status(self):
+        return self._get('status')
+
+    @property
+    def waiting_on_who(self):
+        return self._get('waiting_on_who', optional=True)
+
+    @property
+    def waiting_on_what(self):
+        return self._get('waiting_on_what', optional=True)
+
+    @property
+    def value(self):
+        return self._get('value')
+
+    @property
+    def effort(self):
+        return self._get('effort')
+
+    @property
+    def roi(self):
+        return self._get('roi')
+
+    @property
+    def private_to_circle(self):
+        return self._get('private_to_circle')
