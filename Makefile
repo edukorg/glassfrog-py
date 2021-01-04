@@ -1,37 +1,38 @@
-all: lint unit
+setup:
+	@pip install -U pip poetry
 
 dependencies:
-	@pip install -U pip
-	@pip install pipenv
-	@pipenv install --dev --skip-lock
+	@make setup
+	@poetry install --no-root
+
+update:
+	@poetry update
 
 test:
+	@make check
 	@make lint
 	@make unit
 
+check:
+	@poetry check
+
 lint:
 	@echo "Checking code style ..."
-	@pipenv run flake8 glassfrog tests
+	@poetry run pylint glassfrog tests
 
 unit:
 	@echo "Running unit tests ..."
-	@pipenv run nosetests
+	ENV=test poetry run nosetests
 
 clean:
-	@printf "Deleting dist files"
-	@rm -rf dist .coverage
+	@rm -rf .coverage coverage.xml dist/ build/ *.egg-info/
 
-release: lint unit
-	@rm -rf dist/*
-	@make rogue-release
-
-rogue-release:
-	@./.release
-	@make pypi
-
-pypi:
-	@pipenv run python setup.py build sdist
-	@pipenv run twine upload dist/*.tar.gz
+publish:
+	@make clean
+	@printf "\nPublishing lib"
+	@make setup
+	@poetry publish --build
+	@make clean
 
 
-.PHONY: lint pypi  clean unit test dependencies all
+.PHONY: lint publish clean unit test dependencies setup
