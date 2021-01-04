@@ -1,4 +1,5 @@
-from mock import patch
+from unittest.mock import patch
+
 from requests import HTTPError, Response
 
 from tests.unit.tests_client import HTTPPrettyTestMixin

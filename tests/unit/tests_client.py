@@ -1,8 +1,8 @@
 import json
 import unittest
+from unittest.mock import patch
 
 import httpretty
-from mock import patch
 
 from glassfrog import client, exceptions
 
