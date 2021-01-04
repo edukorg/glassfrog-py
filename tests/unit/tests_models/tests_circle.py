@@ -150,7 +150,7 @@ class TestCircleModel(ModelTestMixin, unittest.TestCase):
     def test_invalid_field(self):
         circle = models.Circle(data={})
         with self.assertRaises(exceptions.UnexpectedDataFormat):
-            circle.id
+            circle.id  # pylint: disable=pointless-statement
 
     def test_list(self):
         data = self.sample_data()

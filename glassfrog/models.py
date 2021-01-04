@@ -1,3 +1,4 @@
+# pylint: disable=redefined-builtin
 from datetime import datetime, timezone
 
 from requests import HTTPError
@@ -23,12 +24,12 @@ class BaseModel:
     def _get(self, value, optional=False):
         try:
             return self._data[value]
-        except TypeError:
-            raise exceptions.UnexpectedDataFormat()
-        except KeyError:
+        except TypeError as e:
+            raise exceptions.UnexpectedDataFormat() from e
+        except KeyError as e:
             if optional:
                 return None
-            raise exceptions.UnexpectedDataFormat()
+            raise exceptions.UnexpectedDataFormat() from e
 
     def _build_item_from_link(self, link_name, model_klass):
         links = self._get('links')
@@ -64,8 +65,7 @@ class BaseModel:
         except HTTPError as e:
             if e.response.status_code == 404:
                 raise exceptions.DoesNotExist()
-            else:
-                raise
+            raise
 
         linked_data = data.get('linked', None)
         return cls(data=data[cls._RESOURCE_NAME][0], linked_data=linked_data)

@@ -23,7 +23,7 @@ class TestDomainModel(ModelTestMixin, unittest.TestCase):
     def test_invalid_field(self):
         domain = models.Domain(data={})
         with self.assertRaises(exceptions.UnexpectedDataFormat):
-            domain.id
+            domain.id  # pylint: disable=pointless-statement
 
     def test_list(self):
         data = self.sample_data()

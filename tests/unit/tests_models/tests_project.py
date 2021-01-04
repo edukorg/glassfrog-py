@@ -119,7 +119,7 @@ class TestProjectModel(ModelTestMixin, unittest.TestCase):
     def test_invalid_field(self):
         project = models.Project(data={})
         with self.assertRaises(exceptions.UnexpectedDataFormat):
-            project.id
+            project.id  # pylint: disable=pointless-statement
 
     def test_list(self):
         data = self.sample_data()

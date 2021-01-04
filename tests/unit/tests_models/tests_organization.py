@@ -23,7 +23,7 @@ class TestOrganizationModel(ModelTestMixin, unittest.TestCase):
     def test_invalid_field(self):
         organization = models.Organization(data={})
         with self.assertRaises(exceptions.UnexpectedDataFormat):
-            organization.id
+            organization.id  # pylint: disable=pointless-statement
 
     def test_list(self):
         data = self.sample_data()

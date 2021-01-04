@@ -196,7 +196,7 @@ class TestRoleModel(ModelTestMixin, unittest.TestCase):
     def test_invalid_field(self):
         role = models.Role(data={})
         with self.assertRaises(exceptions.UnexpectedDataFormat):
-            role.id
+            role.id  # pylint: disable=pointless-statement
 
     def test_list(self):
         data = self.sample_data()

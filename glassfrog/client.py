@@ -1,3 +1,4 @@
+# pylint: disable=redefined-builtin
 import os
 
 import requests
@@ -24,8 +25,7 @@ class GlassFrogClient:
         if from_resource:
             if not id:
                 raise UnboundLocalError()
-            else:
-                url = f'{cls._URL}/{from_resource}/{id}/{resource}'
+            url = f'{cls._URL}/{from_resource}/{id}/{resource}'
         elif id:
             url = f'{cls._URL}/{resource}/{id}'
         else:
