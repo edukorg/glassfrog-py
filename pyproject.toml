@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "glassfrog-py"
-version = "0.3.0"
+version = "0.4.0"
 description = "Python client for Glassfrog API"
 authors = ["Joao Daher <joao@daher.dev>"]
 packages = [
