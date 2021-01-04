@@ -17,6 +17,16 @@ class BaseModel:
         self._data = data
         self._linked_data = linked_data
 
+    def serialize(self):
+        return {
+            'data': self._data,
+            'linked_data': self._linked_data,
+        }
+
+    @classmethod
+    def deserialize(cls, data, linked_data):
+        return cls(data=data, linked_data=linked_data)
+
     @property
     def id(self):
         return self._get('id')
