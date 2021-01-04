@@ -1,49 +1,9 @@
 import unittest
 
-from glassfrog import models, exceptions
-from tests.unit.tests_models import ModelTestMixin
+from glassfrog import models
+from tests.unit.tests_models import UnsupportedModelTestMixin
 
 
-class TestDomainModel(ModelTestMixin, unittest.TestCase):
-    def sample_data(self):
-        item_a = {
-            'id': 42,
-        }
-        item_b = {
-            'id': 314,
-        }
-        return item_a, item_b
-
-    def test_fields(self):
-        data = self.sample_data()[0]
-        assignment = models.Assignment(data=data)
-
-        self.assertEqual(42, assignment.id)
-
-    def test_invalid_field(self):
-        domain = models.Domain(data={})
-        with self.assertRaises(exceptions.UnexpectedDataFormat):
-            domain.id  # pylint: disable=pointless-statement
-
-    def test_list(self):
-        data = self.sample_data()
-        with self.patch_get(resource='domains', data=data, many=True) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Domain.list()
-
-        self.assertEqual(0, get.call_count)
-
-    def test_detail(self):
-        data = [self.sample_data()[0]]
-        with self.patch_get(resource='domains', data=data, many=True) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Domain.get(id=666)
-
-        self.assertEqual(0, get.call_count)
-
-    def test_not_found(self):
-        with self.patch_get_error(status_code=404) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Domain.get(id=666)
-
-        self.assertEqual(0, get.call_count)
+class TestDomainModel(UnsupportedModelTestMixin, unittest.TestCase):
+    model_klass = models.Domain
+    resource_key = 'domains'

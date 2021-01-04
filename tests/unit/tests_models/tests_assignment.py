@@ -1,11 +1,14 @@
 import unittest
 from datetime import date
 
-from glassfrog import models, exceptions
+from glassfrog import models
 from tests.unit.tests_models import ModelTestMixin
 
 
-class TestPersonModel(ModelTestMixin, unittest.TestCase):
+class TestAssignmentModel(ModelTestMixin, unittest.TestCase):
+    model_klass = models.Assignment
+    resource_key = 'assignments'
+
     def sample_data(self):
         item_a = {
             "id": 1,
@@ -88,40 +91,3 @@ class TestPersonModel(ModelTestMixin, unittest.TestCase):
 
         election = role.election
         self.assertIsNone(election)
-
-    def test_invalid_field(self):
-        assignment = models.Assignment(data={})
-        with self.assertRaises(exceptions.UnexpectedDataFormat):
-            assignment.id  # pylint: disable=pointless-statement
-
-    def test_list(self):
-        data = self.sample_data()
-        with self.patch_get(resource='assignments', data=data, many=False) as get:
-            assignment_iter = models.Assignment.list()
-
-            assignments = list(assignment_iter)
-            self.assertEqual(2, len(assignments))
-
-            [assignment_a, assignment_b] = assignments
-            sample_a, sample_b = self.sample_data()
-            self.assertEqual(sample_a, assignment_a._data)
-            self.assertEqual(sample_b, assignment_b._data)
-
-        get.assert_called_once_with(resource='assignments')
-
-    def test_detail(self):
-        data = [self.sample_data()[0]]
-        with self.patch_get(resource='assignments', data=data, many=False) as get:
-            assignment = models.Assignment.get(id=42)
-
-            sample = self.sample_data()[0]
-            self.assertEqual(sample, assignment._data)
-
-        get.assert_called_once_with(resource='assignments', id=42)
-
-    def test_not_found(self):
-        with self.patch_get_error(status_code=404) as get:
-            with self.assertRaises(exceptions.DoesNotExist):
-                models.Assignment.get(id=666)
-
-        self.assertEqual(1, get.call_count)

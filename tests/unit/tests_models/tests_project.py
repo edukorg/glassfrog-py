@@ -1,11 +1,14 @@
 import unittest
 from datetime import datetime, timezone
 
-from glassfrog import models, exceptions
-from tests.unit.tests_models import ModelTestMixin
+from glassfrog import models
+from tests.unit.tests_models import UnsupportedModelTestMixin
 
 
-class TestProjectModel(ModelTestMixin, unittest.TestCase):
+class TestProjectModel(UnsupportedModelTestMixin, unittest.TestCase):
+    model_klass = models.Project
+    resource_key = 'projects'
+
     def sample_data(self):
         item_a = {
             "id": 42,
@@ -115,31 +118,3 @@ class TestProjectModel(ModelTestMixin, unittest.TestCase):
         self.assertEqual(1, circle.id)
 
         self.assertEqual(1, get.call_count)
-
-    def test_invalid_field(self):
-        project = models.Project(data={})
-        with self.assertRaises(exceptions.UnexpectedDataFormat):
-            project.id  # pylint: disable=pointless-statement
-
-    def test_list(self):
-        data = self.sample_data()
-        with self.patch_get(resource='projects', data=data, many=True) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Project.list()
-
-        self.assertEqual(0, get.call_count)
-
-    def test_detail(self):
-        data = [self.sample_data()[0]]
-        with self.patch_get(resource='projects', data=data, many=True) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Project.get(id=666)
-
-        self.assertEqual(0, get.call_count)
-
-    def test_not_found(self):
-        with self.patch_get_error(status_code=404) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Project.get(id=666)
-
-        self.assertEqual(0, get.call_count)

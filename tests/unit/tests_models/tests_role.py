@@ -1,11 +1,14 @@
 import unittest
 from datetime import date
 
-from glassfrog import models, exceptions
+from glassfrog import models
 from tests.unit.tests_models import ModelTestMixin
 
 
 class TestRoleModel(ModelTestMixin, unittest.TestCase):
+    model_klass = models.Role
+    resource_key = 'roles'
+
     def sample_data(self):
         item_a = {
             'id': 42,
@@ -95,7 +98,7 @@ class TestRoleModel(ModelTestMixin, unittest.TestCase):
 
         self.assertEqual(1, get.call_count)
 
-    def test_fields_accontabilities(self):
+    def test_fields_accountabilities(self):
         data = self.sample_data()[0]
         linked_data = {'accountabilities': [
             {'id': 10, 'description': 'potato 10'},
@@ -192,40 +195,3 @@ class TestRoleModel(ModelTestMixin, unittest.TestCase):
 
         election = role.elected_until
         self.assertIsNone(election)
-
-    def test_invalid_field(self):
-        role = models.Role(data={})
-        with self.assertRaises(exceptions.UnexpectedDataFormat):
-            role.id  # pylint: disable=pointless-statement
-
-    def test_list(self):
-        data = self.sample_data()
-        with self.patch_get(resource='roles', data=data, many=False) as get:
-            roles_iter = models.Role.list()
-
-            roles = list(roles_iter)
-            self.assertEqual(2, len(roles))
-
-            [role_a, role_b] = roles
-            sample_a, sample_b = self.sample_data()
-            self.assertEqual(sample_a, role_a._data)
-            self.assertEqual(sample_b, role_b._data)
-
-        get.assert_called_once_with(resource='roles')
-
-    def test_detail(self):
-        data = [self.sample_data()[0]]
-        with self.patch_get(resource='roles', data=data, many=False) as get:
-            role = models.Role.get(id=42)
-
-            sample = self.sample_data()[0]
-            self.assertEqual(sample, role._data)
-
-        get.assert_called_once_with(resource='roles', id=42)
-
-    def test_not_found(self):
-        with self.patch_get_error(status_code=404) as get:
-            with self.assertRaises(exceptions.DoesNotExist):
-                models.Role.get(id=666)
-
-        self.assertEqual(1, get.call_count)
