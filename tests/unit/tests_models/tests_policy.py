@@ -1,49 +1,9 @@
 import unittest
 
-from glassfrog import models, exceptions
-from tests.unit.tests_models import ModelTestMixin
+from glassfrog import models
+from tests.unit.tests_models import UnsupportedModelTestMixin
 
 
-class TestPolicyModel(ModelTestMixin, unittest.TestCase):
-    def sample_data(self):
-        item_a = {
-            'id': 42,
-        }
-        item_b = {
-            'id': 314,
-        }
-        return item_a, item_b
-
-    def test_fields(self):
-        data = self.sample_data()[0]
-        assignment = models.Assignment(data=data)
-
-        self.assertEqual(42, assignment.id)
-
-    def test_invalid_field(self):
-        policy = models.Policy(data={})
-        with self.assertRaises(exceptions.UnexpectedDataFormat):
-            policy.id  # pylint: disable=pointless-statement
-
-    def test_list(self):
-        data = self.sample_data()
-        with self.patch_get(resource='policies', data=data, many=True) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Policy.list()
-
-        self.assertEqual(0, get.call_count)
-
-    def test_detail(self):
-        data = [self.sample_data()[0]]
-        with self.patch_get(resource='policies', data=data, many=True) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Policy.get(id=666)
-
-        self.assertEqual(0, get.call_count)
-
-    def test_not_found(self):
-        with self.patch_get_error(status_code=404) as get:
-            with self.assertRaises(exceptions.UnsupportedModelException):
-                models.Policy.get(id=666)
-
-        self.assertEqual(0, get.call_count)
+class TestPolicyModel(UnsupportedModelTestMixin, unittest.TestCase):
+    model_klass = models.Policy
+    resource_key = 'policies'

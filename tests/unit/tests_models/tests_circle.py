@@ -1,10 +1,13 @@
 import unittest
 
-from glassfrog import models, exceptions
+from glassfrog import models
 from tests.unit.tests_models import ModelTestMixin
 
 
 class TestCircleModel(ModelTestMixin, unittest.TestCase):
+    model_klass = models.Circle
+    resource_key = 'circles'
+
     def sample_data(self):
         item_a = {
             'id': 42,
@@ -144,42 +147,5 @@ class TestCircleModel(ModelTestMixin, unittest.TestCase):
         [project_a, project_b] = projects
         self.assertEqual(666, project_a.id)
         self.assertEqual(999, project_b.id)
-
-        self.assertEqual(1, get.call_count)
-
-    def test_invalid_field(self):
-        circle = models.Circle(data={})
-        with self.assertRaises(exceptions.UnexpectedDataFormat):
-            circle.id  # pylint: disable=pointless-statement
-
-    def test_list(self):
-        data = self.sample_data()
-        with self.patch_get(resource='circles', data=data, many=False) as get:
-            circles_iter = models.Circle.list()
-
-            circles = list(circles_iter)
-            self.assertEqual(2, len(circles))
-
-            [circle_a, circle_b] = circles
-            sample_a, sample_b = self.sample_data()
-            self.assertEqual(sample_a, circle_a._data)
-            self.assertEqual(sample_b, circle_b._data)
-
-        get.assert_called_once_with(resource='circles')
-
-    def test_detail(self):
-        data = [self.sample_data()[0]]
-        with self.patch_get(resource='circles', data=data, many=False) as get:
-            circle = models.Circle.get(id=42)
-
-            sample = self.sample_data()[0]
-            self.assertEqual(sample, circle._data)
-
-        get.assert_called_once_with(resource='circles', id=42)
-
-    def test_not_found(self):
-        with self.patch_get_error(status_code=404) as get:
-            with self.assertRaises(exceptions.DoesNotExist):
-                models.Circle.get(id=666)
 
         self.assertEqual(1, get.call_count)

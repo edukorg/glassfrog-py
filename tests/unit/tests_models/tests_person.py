@@ -1,10 +1,13 @@
 import unittest
 
-from glassfrog import models, exceptions
+from glassfrog import models
 from tests.unit.tests_models import ModelTestMixin
 
 
 class TestPersonModel(ModelTestMixin, unittest.TestCase):
+    model_klass = models.Person
+    resource_key = 'people'
+
     def sample_data(self):
         item_a = {
             "id": 42,
@@ -87,42 +90,5 @@ class TestPersonModel(ModelTestMixin, unittest.TestCase):
         [assignment_a, assignment_b] = assignments
         self.assertEqual(10000, assignment_a.id)
         self.assertEqual(20000, assignment_b.id)
-
-        self.assertEqual(1, get.call_count)
-
-    def test_invalid_field(self):
-        person = models.Person(data={})
-        with self.assertRaises(exceptions.UnexpectedDataFormat):
-            person.id  # pylint: disable=pointless-statement
-
-    def test_list(self):
-        data = self.sample_data()
-        with self.patch_get(resource='people', data=data, many=False) as get:
-            people_iter = models.Person.list()
-
-            people = list(people_iter)
-            self.assertEqual(2, len(people))
-
-            [person_a, person_b] = people
-            sample_a, sample_b = self.sample_data()
-            self.assertEqual(sample_a, person_a._data)
-            self.assertEqual(sample_b, person_b._data)
-
-        get.assert_called_once_with(resource='people')
-
-    def test_detail(self):
-        data = [self.sample_data()[0]]
-        with self.patch_get(resource='people', data=data, many=False) as get:
-            person = models.Person.get(id=42)
-
-            sample = self.sample_data()[0]
-            self.assertEqual(sample, person._data)
-
-        get.assert_called_once_with(resource='people', id=42)
-
-    def test_not_found(self):
-        with self.patch_get_error(status_code=404) as get:
-            with self.assertRaises(exceptions.DoesNotExist):
-                models.Person.get(id=666)
 
         self.assertEqual(1, get.call_count)
