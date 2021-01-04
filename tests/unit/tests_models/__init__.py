@@ -78,6 +78,16 @@ class ModelTestMixin(HTTPPrettyTestMixin, ABC):
 
         self.assertEqual(1, get.call_count)
 
+    def test_serialize(self):
+        sample = self.sample_data()[0]
+        obj = self.model_klass(data=sample)  # pylint: disable=not-callable
+
+        serialized = obj.serialize()
+        new_obj = self.model_klass.deserialize(**serialized)
+
+        self.assertEqual(obj._data, new_obj._data)
+        self.assertEqual(obj._linked_data, new_obj._linked_data)
+
 
 class UnsupportedModelTestMixin(ModelTestMixin, ABC):
     def sample_data(self):
