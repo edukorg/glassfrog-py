@@ -23,7 +23,7 @@ class TestAccountabilityModel(ModelTestMixin, unittest.TestCase):
     def test_invalid_field(self):
         accountability = models.Accountability(data={})
         with self.assertRaises(exceptions.UnexpectedDataFormat):
-            accountability.id
+            accountability.id  # pylint: disable=pointless-statement
 
     def test_list(self):
         data = self.sample_data()

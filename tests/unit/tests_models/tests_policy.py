@@ -23,7 +23,7 @@ class TestPolicyModel(ModelTestMixin, unittest.TestCase):
     def test_invalid_field(self):
         policy = models.Policy(data={})
         with self.assertRaises(exceptions.UnexpectedDataFormat):
-            policy.id
+            policy.id  # pylint: disable=pointless-statement
 
     def test_list(self):
         data = self.sample_data()

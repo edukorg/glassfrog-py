@@ -1,3 +1,7 @@
+from glassfrog.exceptions import (
+    UnsupportedModelException,
+    TokenUndefinedException,
+)
 from glassfrog.models import (
     Organization,
     Circle,
@@ -7,12 +11,6 @@ from glassfrog.models import (
     Policy,
     Project,
 )
-from glassfrog.exceptions import (
-    UnsupportedModelException,
-    TokenUndefinedException,
-)
-
-
 
 __all__ = (
     'Accountability',
