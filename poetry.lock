@@ -48,7 +48,7 @@ toml = ["toml"]
 
 [[package]]
 name = "httpretty"
-version = "1.0.3"
+version = "1.0.5"
 description = "HTTP client mock for Python"
 category = "dev"
 optional = false
@@ -243,7 +243,7 @@ coverage = [
     {file = "coverage-5.3.1.tar.gz", hash = "sha256:38f16b1317b8dd82df67ed5daa5f5e7c959e46579840d77a67a4ceb9cef0a50b"},
 ]
 httpretty = [
-    {file = "httpretty-1.0.3.tar.gz", hash = "sha256:9335cbd8f38745e0e2dc4755d8932a77d378d93e15804969504b1e6b568d613c"},
+    {file = "httpretty-1.0.5.tar.gz", hash = "sha256:e53c927c4d3d781a0761727f1edfad64abef94e828718e12b672a678a8b3e0b5"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
