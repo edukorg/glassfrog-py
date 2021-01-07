@@ -18,11 +18,11 @@ jobs:
         run: |
           make setup
         env:
-          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
       - name: Detect version upgrade
         id: versioning
         run: |
-          package_version=$(echo $(poetry version -v) | sed "s/django-cloud-tasks //")
+          package_version=$(echo $(poetry version -v) | sed "s/glassfrog //")
           echo "::set-output name=package_version::"$package_version
           upgraded=$(git tag --list | grep -q "${package_version}$" && echo "false" || echo "true")
           echo "::set-output name=upgraded::"$upgraded
@@ -46,4 +46,4 @@ jobs:
         run: |
           make publish
         env:
-          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
