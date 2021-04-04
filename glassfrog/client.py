@@ -2,8 +2,13 @@
 import os
 
 import requests
+from retrying import retry
 
 from glassfrog import exceptions
+
+
+def retry_if_conn_error(exception):
+    return isinstance(exception, ConnectionError) or isinstance(exception, requests.HTTPError)
 
 
 class GlassFrogClient:
@@ -31,9 +36,10 @@ class GlassFrogClient:
         else:
             url = f'{cls._URL}/{resource}'
 
-        response = requests.get(
-            url=url,
-            headers=cls._get_headers(),
-        )
+        with retry(stop_max_attempt_number=3, retry_on_exception=retry_if_conn_error):
+            response = requests.get(
+                url=url,
+                headers=cls._get_headers(),
+            )
         response.raise_for_status()
         return response.json()
