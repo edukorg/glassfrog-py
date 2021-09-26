@@ -7,10 +7,32 @@
 
 Friendly client to navigate in Glassfrog's API
 
-## Installation
+### Setup
 
-``pip install glassfrog``
+- Install with: ``pip install glassfrog``
+- Add your API token(https://support.glassfrog.com/support/solutions/articles/9000066846-how-do-i-get-api-keys-) to the environment variable `GLASSFROG_API_TOKEN`
 
-## Setup
+## Usage
 
-- Add your API token to the environment variable `GLASSFROG_API_TOKEN`
+All supported models have 2 methods that can be used to locate resources:
+- `.get(id: int)` fetches the resource given its ID
+- `.list()` iterates over all known resources
+
+Most models also have attributes to help navigate through related resources, such as fetching all roles from a circle.
+
+Here's an example of exploration:
+
+```
+from glassfrog import models
+
+for circle in models.Circles.list():  # fetch all circles from the organization
+  print(circle.name)
+  
+  for role in circle.roles:  # fetch all roles from a each circle
+    print(role.purpose)
+    
+    for people in role.people:  # fetch all people that are assigned to each role
+      print(people.name)
+```
+
+
